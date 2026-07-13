@@ -1,0 +1,12 @@
+# Hugo 產生的網站檔案
+/public/
+
+# Hugo 快取與資源
+/resources/
+
+# Hugo lock file
+.hugo_build.lock
+
+# 作業系統檔案
+.DS_Store
+Thumbs.db
