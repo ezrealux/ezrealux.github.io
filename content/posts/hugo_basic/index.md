@@ -110,43 +110,66 @@ categories = ["hugo"]
   ```
   建立完後，我們需要撰寫一下 `hugo.yml` 裡的內容：
   ```yaml
-  name: Deploy Hugo site # 工作名稱，自由設定就好
+  name: Deploy Hugo site to Pages
 
-  on: # 何時執行這個 workflow
+  on:
     push:
       branches:
         - main
-  # 每當 push 到 main 時執行一次
 
-  permissions: # 這個 workflow 擁有什麼權限 
-    contents: write # 允許 workflow 去讀/修改 hugo repo 及建立 commit
-    pages: write    # 允許 workflow 把網站發布到 github pages
-    id-token: write # 允許 github 對網站做安全驗證
+  permissions:
+    contents: read
+    pages: write
+    id-token: write
 
-  jobs: # 這個 workflow 實際的工作內容
+  concurrency:
+    group: "pages"
+    cancel-in-progress: true
+
+  jobs:
     build:
-      runs-on: ubuntu-latest # step0: 讓 github 建立一台 ubuntu VM
+      runs-on: ubuntu-latest
+
+      env:
+        HUGO_VERSION: 0.152.2
 
       steps:
-        - name: Checkout # step1: 把 repo 下載到該 ubuntu VM
+        - name: Checkout
           uses: actions/checkout@v4
           with:
-            submodules: true
+            submodules: recursive
+            fetch-depth: 0
 
-        - name: Setup Hugo # step2: 在 ubuntu VM 安裝 hugo
+        - name: Setup Pages
+          uses: actions/configure-pages@v5
+
+        - name: Setup Hugo
           uses: peaceiris/actions-hugo@v3
           with:
-            hugo-version: 'latest'
+            hugo-version: ${{ env.HUGO_VERSION }}
             extended: true
 
-        - name: Build # step3: 建立網站，把 markdown 格式轉換為網頁可讀的 HTML 格式
+        - name: Build
           run: hugo --minify
 
-        - name: Deploy # step4: 把建立好的網站放到 github pages，讓外人可以公開訪問
-          uses: peaceiris/actions-gh-pages@v4
+        - name: Upload artifact
+          uses: actions/upload-pages-artifact@v3
           with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./public
+            path: ./public
+
+    deploy:
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+
+      runs-on: ubuntu-latest
+
+      needs: build
+
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
   ```
   (workflow 內容為 AI 撰寫，請根據情況調整內容)
   
@@ -172,7 +195,7 @@ categories = ["hugo"]
   ```
   完成後，hugo repo 就正式推送到 github repo 上了。  
 
-  而此時因為我們已經有了自己的 github action，所以這次我們再來到 repo 的 Setting 頁面和 pages 分類([**參照前面建立repo的流程**](#1-建立github-repository))，這次設定 Source: **Github actions**。
+  而此時我們需要再度來到 repo 的 Setting 頁面和 pages 分類([**參照前面建立repo的流程**](#1-建立github-repository))，這次設定 Source: **Github actions**。**Deploy from a branch** 與 **Github actions** 最主要的差別在於**實際網站來源不同**，如果我們選用 **Deploy from a branch**，我們需要先在本地端手動部署好網頁，再將 `/public/` 裡的內容整組推送到github repo；但若是使用 **Github actions**，透過我們剛剛撰寫好的 workflow，我們可以在推送後，由 github 建立的 ubuntu VM，自動完成部署的工作。 
 
   這樣我們就完成了第一次推送。
 
