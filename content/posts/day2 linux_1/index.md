@@ -1,7 +1,7 @@
 +++
 date = '2026-07-15T13:47:10+08:00'
 draft = false
-title = 'Road to CS day2: linux basic (1/2)'
+title = 'Road to CS day2: linux1-basic'
 tags = ["linux"]
 categories = ["linux"]
 +++
