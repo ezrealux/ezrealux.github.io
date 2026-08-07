@@ -2,6 +2,8 @@
 date = '2026-07-29T13:27:23+08:00'
 draft = false
 title = 'Road to CS day6: linux5-file system (unfinished)'
+tags = ["linux"]
+categories = ["linux"]
 +++
 
 今天來學 file system。

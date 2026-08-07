@@ -2,6 +2,8 @@
 date = '2026-07-30T16:20:22+08:00'
 draft = false
 title = 'Road to CS day7: linux6-shell script (unfinished)'
+tags = ["linux"]
+categories = ["linux"]
 +++
 
 ## 1. init
