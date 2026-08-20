@@ -2,6 +2,8 @@
 date = '2026-08-14T11:34:10+08:00'
 draft = false
 title = 'Day12 Go Grammar'
+tags = ["go"]
+categories = ["go"]
 +++
 
 Go 文法

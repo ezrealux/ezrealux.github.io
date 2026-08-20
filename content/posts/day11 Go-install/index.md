@@ -2,6 +2,8 @@
 date = '2026-08-12T20:43:51+08:00'
 draft = false
 title = 'Day11 Go Install'
+tags = ["go"]
+categories = ["go"]
 +++
 
 在 wsl 上安裝 go
